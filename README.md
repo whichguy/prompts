@@ -18,9 +18,9 @@ These prompts follow an **outcome-oriented, prompt-as-code** approach:
 **Produces**: Technology stack recommendation with evidence-based rationale  
 **Solves**: "What technologies should I use for this project?"
 
-```bash
-/prompt stack-recommendation "Build a real-time collaborative editor for 1000 users"
-/prompt stack-recommendation "E-commerce platform" --rehydrate-from ./previous-analysis/marketplace.yaml
+```
+stack-recommendation "Build a real-time collaborative editor for 1000 users"
+stack-recommendation "E-commerce platform" --rehydrate-from ./previous-analysis/marketplace.yaml
 ```
 
 **Output**: Primary technology stack, alternatives (conservative/innovative), GitHub evidence from 5+ repos, compatibility analysis, implementation guidance.
@@ -29,9 +29,9 @@ These prompts follow an **outcome-oriented, prompt-as-code** approach:
 **Produces**: Platform limitation analysis with empirical testing results  
 **Solves**: "What are the real constraints and gotchas of this platform?"
 
-```bash
-/prompt platform-constraints "Google Apps Script execution limits and state management"
-/prompt platform-constraints "Vercel Edge Functions" --focus-areas "database,scaling"
+```
+platform-constraints "Google Apps Script execution limits and state management"
+platform-constraints "Vercel Edge Functions" --focus-areas "database,scaling"
 ```
 
 **Output**: Hard/soft limits discovered through testing, required patterns, anti-patterns, boilerplate code, use case recommendations.
@@ -40,9 +40,9 @@ These prompts follow an **outcome-oriented, prompt-as-code** approach:
 **Produces**: Zero-downtime migration plan with risk mitigation  
 **Solves**: "How do I safely migrate from my current system?"
 
-```bash
-/prompt migration-strategy "Migrate PHP monolith to microservices, keep running during migration"
-/prompt migration-strategy "Modernize legacy Java system" --risk-tolerance conservative
+```
+migration-strategy "Migrate PHP monolith to microservices, keep running during migration"
+migration-strategy "Modernize legacy Java system" --risk-tolerance conservative
 ```
 
 **Output**: Phase-by-phase plan, zero-downtime approach, data synchronization strategy, risk assessment, rollback procedures.
@@ -51,9 +51,9 @@ These prompts follow an **outcome-oriented, prompt-as-code** approach:
 **Produces**: Complete project implementation plan with phases and tasks  
 **Solves**: "I need a comprehensive plan to build this project"
 
-```bash
-/prompt project-blueprint "Build a SaaS project management tool for remote teams"
-/prompt project-blueprint "Mobile expense app" --constraints "6 months, 2 person team"
+```
+project-blueprint "Build a SaaS project management tool for remote teams"
+project-blueprint "Mobile expense app" --constraints "6 months, 2 person team"
 ```
 
 **Output**: Detailed phases, task breakdown with estimates, team recommendations, technology stack, risk assessment, success metrics.
@@ -75,10 +75,10 @@ All prompts support organizational knowledge reuse:
 
 ```bash
 # Cache results for future similar projects
-/prompt stack-recommendation "marketplace project" > ./knowledge/marketplace-stack.yaml
+stack-recommendation "marketplace project" > ./knowledge/marketplace-stack.yaml
 
 # Rehydrate from previous analysis  
-/prompt stack-recommendation "another marketplace" --rehydrate-from ./knowledge/marketplace-stack.yaml
+stack-recommendation "another marketplace" --rehydrate-from ./knowledge/marketplace-stack.yaml
 ```
 
 **Benefits**:
@@ -116,18 +116,18 @@ Each prompt enforces quality standards:
 ## Usage Patterns
 
 ### Basic Usage
-```bash
-/prompt [prompt-name] "[natural language description]"
+```
+[prompt-name] "[natural language description]"
 ```
 
 ### With Rehydration
-```bash  
-/prompt [prompt-name] "[description]" --rehydrate-from ./previous-analysis/file.yaml
+```
+[prompt-name] "[description]" --rehydrate-from ./previous-analysis/file.yaml
 ```
 
 ### With Constraints
-```bash
-/prompt [prompt-name] "[description]" --constraints "budget, timeline, team size"
+```
+[prompt-name] "[description]" --constraints "budget, timeline, team size"
 ```
 
 ## Repository Structure
@@ -153,26 +153,26 @@ prompts/
 ### Waterfall Approach
 ```bash
 # 1. Get project plan
-/prompt project-blueprint "Build collaborative whiteboard app"
+project-blueprint "Build collaborative whiteboard app"
 
 # 2. Get technology recommendations  
-/prompt stack-recommendation "real-time collaborative whiteboard for 100 users"
+stack-recommendation "real-time collaborative whiteboard for 100 users"
 
 # 3. Analyze chosen platform constraints
-/prompt platform-constraints "Node.js with Socket.io scaling limits"
+platform-constraints "Node.js with Socket.io scaling limits"
 
 # 4. Create migration plan if replacing existing system
-/prompt migration-strategy "Migrate from Rails to Node.js whiteboard"
+migration-strategy "Migrate from Rails to Node.js whiteboard"
 ```
 
 ### Rehydration Chain
 ```bash
 # Build organizational knowledge
-/prompt stack-recommendation "collaborative tool" > ./org-knowledge/collab-stack.yaml
-/prompt platform-constraints "WebSocket platforms" > ./org-knowledge/websocket-limits.yaml
+stack-recommendation "collaborative tool" > ./org-knowledge/collab-stack.yaml
+platform-constraints "WebSocket platforms" > ./org-knowledge/websocket-limits.yaml
 
 # Reuse for similar project
-/prompt project-blueprint "team collaboration app" \
+project-blueprint "team collaboration app" \
   --rehydrate-from ./org-knowledge/collab-stack.yaml
 ```
 

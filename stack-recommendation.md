@@ -148,18 +148,18 @@ Before returning results, validate:
 ## Example Usage
 
 ### Basic Usage
-```bash
-/prompt stack-recommendation "Build a document collaboration platform for 500 lawyers requiring audit trails and compliance"
+```
+stack-recommendation "Build a document collaboration platform for 500 lawyers requiring audit trails and compliance"
 ```
 
 ### With Rehydration
-```bash  
-/prompt stack-recommendation "Build a marketplace for freelance developers" --rehydrate-from ./previous-analysis/marketplace-investigation.yaml
+```
+stack-recommendation "Build a marketplace for freelance developers" --rehydrate-from ./previous-analysis/marketplace-investigation.yaml
 ```
 
 ### With Constraints
-```bash
-/prompt stack-recommendation "Build a real-time dashboard" --constraints "PHP team, on-premise only, <$10k budget"
+```
+stack-recommendation "Build a real-time dashboard" --constraints "PHP team, on-premise only, <$10k budget"
 ```
 
 ## Integration with Other Prompts

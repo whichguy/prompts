@@ -348,18 +348,18 @@ Before returning results, validate:
 ## Example Usage
 
 ### Basic Project Planning
-```bash
-/prompt project-blueprint "Build a collaborative document editor for remote teams with real-time sync and version history"
+```
+project-blueprint "Build a collaborative document editor for remote teams with real-time sync and version history"
 ```
 
 ### With Constraints
-```bash
-/prompt project-blueprint "Create a mobile expense tracking app" --constraints "6 month timeline, 2 person team, iOS first"
+```
+project-blueprint "Create a mobile expense tracking app" --constraints "6 month timeline, 2 person team, iOS first"
 ```
 
 ### With Rehydration
-```bash
-/prompt project-blueprint "Build a task management SaaS" --rehydrate-from ./previous-analysis/project-management-app.yaml
+```
+project-blueprint "Build a task management SaaS" --rehydrate-from ./previous-analysis/project-management-app.yaml
 ```
 
 ## Integration with Other Prompts

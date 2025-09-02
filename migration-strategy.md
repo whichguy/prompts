@@ -286,18 +286,18 @@ Before returning results, validate:
 ## Example Usage
 
 ### Basic Migration Planning
-```bash
-/prompt migration-strategy "Migrate Rails monolith to Node.js microservices, 100k daily active users"
+```
+migration-strategy "Migrate Rails monolith to Node.js microservices, 100k daily active users"
 ```
 
 ### With Risk Constraints
-```bash
-/prompt migration-strategy "Modernize banking system" --constraints "zero-downtime required, regulatory compliance" --risk-tolerance conservative
+```
+migration-strategy "Modernize banking system" --constraints "zero-downtime required, regulatory compliance" --risk-tolerance conservative
 ```
 
 ### With Previous Analysis
-```bash
-/prompt migration-strategy "Update legacy Java system" --rehydrate-from ./previous-analysis/java-modernization.yaml
+```
+migration-strategy "Update legacy Java system" --rehydrate-from ./previous-analysis/java-modernization.yaml
 ```
 
 ## Integration with Other Prompts

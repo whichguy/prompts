@@ -18,7 +18,7 @@ execute_phase_3() {
     # If platform is mentioned in requirements, investigate constraints
     if echo "$arguments" | grep -qi "google\|salesforce\|aws\|azure"; then
         local platform=$(extract_platform "$arguments")
-        /prompt platform-constraints "$platform execution limits and scaling constraints for $arguments" \
+        platform-constraints "$platform execution limits and scaling constraints for $arguments" \
           --focus-areas "execution,scaling,cost" \
           > docs/planning/phase3-platform-constraints.yaml
     fi
@@ -63,20 +63,20 @@ execute_phase_4() {
     case $approach in
         greenfield)
             echo "📊 Approach: Technology Stack Selection (new project)"
-            /prompt stack-recommendation "$arguments" $rehydration_path \
+            stack-recommendation "$arguments" $rehydration_path \
               > docs/planning/phase4-stack-recommendation.yaml
             ;;
             
         constrained)
             echo "🔍 Approach: Platform Constraints Investigation (specific platform)"
-            /prompt platform-constraints "$existing_stack for project: $arguments" \
+            platform-constraints "$existing_stack for project: $arguments" \
               --focus-areas "execution,storage,scaling,integration" \
               > docs/planning/phase4-platform-constraints.yaml
             ;;
             
         migration)
             echo "🔄 Approach: Migration Strategy (modernizing existing system)"
-            /prompt migration-strategy "Migrate from $existing_stack for project: $arguments" \
+            migration-strategy "Migrate from $existing_stack for project: $arguments" \
               --risk-tolerance conservative $rehydration_path \
               > docs/planning/phase4-migration-strategy.yaml
             ;;
@@ -84,7 +84,7 @@ execute_phase_4() {
     
     # Always get complete project blueprint incorporating technology decisions
     echo "📋 Generating comprehensive project blueprint..."
-    /prompt project-blueprint "$arguments" $rehydration_path \
+    project-blueprint "$arguments" $rehydration_path \
       > docs/planning/phase4-project-blueprint.yaml
     
     # Validate outcome-oriented prompt outputs
@@ -304,51 +304,50 @@ EOF
 
 ## Parallel Execution with Worktrees
 
-The tech-investigator agent can utilize worktree isolation for parallel investigation:
+The outcome-oriented prompts can utilize worktree isolation for parallel investigation:
 
 ```bash
-# Enhanced launch_tech_investigation function
-launch_tech_investigation() {
-    local mode="$1"
+# Enhanced launch_technology_investigation function
+launch_technology_investigation() {
+    local approach="$1"
     local context="$2"
     local depth="${3:-2}"
     
-    case $mode in
-        hybrid)
-            # Run selection first
-            /prompt tech-investigator --mode select --context "$context" \
-              > docs/planning/phase4-selection.md
+    case $approach in
+        comparative_analysis)
+            # Run stack recommendation first to get alternatives
+            stack-recommendation "$context" > docs/planning/phase4-stack-analysis.yaml
             
-            # Extract top N candidates
-            local candidates=$(grep "primary\|alternative" docs/planning/phase4-selection.md | \
-              head -$depth | cut -d: -f2)
+            # Extract primary and alternative stacks
+            local stacks=$(grep -A 10 "alternatives:" docs/planning/phase4-stack-analysis.yaml | \
+              grep "stack:" | cut -d: -f2 | head -$depth)
             
-            # Launch parallel deep investigations
-            for candidate in $candidates; do
-                echo "🔬 Deep investigating: $candidate"
+            # Launch parallel platform constraint investigations
+            for stack in $stacks; do
+                echo "🔬 Investigating platform constraints: $stack"
                 
                 # Create isolated worktree for investigation
-                create_isolated_worktree "tech-inv-${candidate}" "investigation"
+                create_isolated_worktree "constraints-${stack}" "investigation"
                 
                 # Create investigation mission
                 cat > "$CURRENT_WORKTREE/mission.md" << EOF
-# Deep Investigation Mission: $candidate
+# Platform Constraints Investigation: $stack
 
-Run comprehensive investigation of $candidate stack including:
-- Execution model testing
-- State management patterns
-- Authentication flow
-- Deployment patterns
-- Common gotchas
+Analyze platform limitations and implementation patterns for:
+- Execution model and performance
+- State management and persistence
+- Authentication and security
+- Deployment and monitoring
+- Production patterns and gotchas
 
-Output to: investigation-${candidate}.md
+Output to: constraints-${stack}.yaml
 EOF
                 
-                # Launch investigation in worktree
+                # Launch platform constraints analysis in worktree
                 (cd "$CURRENT_WORKTREE" && \
-                  /prompt tech-investigator --mode deep \
-                    --stack "$candidate" --focus "all" \
-                    > investigation-${candidate}.md)
+                  platform-constraints "$stack platform analysis for: $context" \
+                    --focus-areas "execution,storage,scaling,deployment" \
+                    > constraints-${stack}.yaml)
                 
                 # Cleanup merges results back
                 cleanup_isolated_worktree
@@ -393,25 +392,25 @@ execute_phase_4 "Build a real-time collaborative editor for 1000 users"
 ### Direct Invocation
 ```bash
 # Investigate specific platform deeply
-/prompt tech-investigator --mode deep --stack "vercel-nextjs" --focus "edge-functions streaming"
+platform-constraints "Vercel Edge Functions and Next.js" --focus-areas "edge-functions,streaming,performance"
 
-# Select stack for new project
-/prompt tech-investigator --mode select --context "e-commerce with 10k products, 500 orders/day"
+# Select stack for new project  
+stack-recommendation "e-commerce platform with 10k products, 500 orders/day"
 
-# Hybrid investigation for migration
-/prompt tech-investigator --mode hybrid --context "migrate from wordpress to modern stack" --depth 3
+# Migration planning for existing system
+migration-strategy "migrate from WordPress to modern stack with 3 alternative approaches"
 ```
 
 ### From Other Phases
 ```bash
 # Phase 3: Check platform feasibility
-/prompt tech-investigator --mode deep --stack "salesforce" --focus "execution-model cost"
+platform-constraints "Salesforce platform" --focus-areas "execution-model,cost,limitations"
 
 # Phase 7: Get architecture patterns
-/prompt tech-investigator --mode deep --stack "selected-stack" --focus "patterns"
+platform-constraints "selected technology stack" --focus-areas "patterns,architecture,best-practices"
 
 # Phase 10: Get deployment guide
-/prompt tech-investigator --mode deep --stack "selected-stack" --focus "deployment monitoring"
+platform-constraints "selected technology stack" --focus-areas "deployment,monitoring,production"
 ```
 
 ## Benefits of Integration

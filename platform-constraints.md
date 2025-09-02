@@ -239,18 +239,18 @@ Before returning results, validate:
 ## Example Usage
 
 ### Basic Platform Investigation
-```bash
-/prompt platform-constraints "Vercel Edge Functions database connection handling and limits"
+```
+platform-constraints "Vercel Edge Functions database connection handling and limits"
 ```
 
 ### Focused Investigation
-```bash
-/prompt platform-constraints "Google Apps Script" --focus-areas "execution,storage,auth" --scale-target 1000
+```
+platform-constraints "Google Apps Script" --focus-areas "execution,storage,auth" --scale-target 1000
 ```
 
 ### With Previous Analysis
-```bash
-/prompt platform-constraints "AWS Lambda cold starts" --rehydrate-from ./previous-analysis/lambda-2023.yaml
+```
+platform-constraints "AWS Lambda cold starts" --rehydrate-from ./previous-analysis/lambda-2023.yaml
 ```
 
 ## Integration with Other Prompts
