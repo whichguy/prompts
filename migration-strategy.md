@@ -287,17 +287,17 @@ Before returning results, validate:
 
 ### Basic Migration Planning
 ```
-migration-strategy "Migrate Rails monolith to Node.js microservices, 100k daily active users"
+Ask prompter to run migration-strategy with context: "Migrate Rails monolith to Node.js microservices, 100k daily active users"
 ```
 
 ### With Risk Constraints
 ```
-migration-strategy "Modernize banking system" --constraints "zero-downtime required, regulatory compliance" --risk-tolerance conservative
+Ask prompter to run migration-strategy with context: "Modernize banking system" and constraints: "zero-downtime required, regulatory compliance" and risk tolerance: conservative
 ```
 
 ### With Previous Analysis
 ```
-migration-strategy "Update legacy Java system" --rehydrate-from ./previous-analysis/java-modernization.yaml
+Ask prompter to run migration-strategy with context: "Update legacy Java system" and rehydration from ./previous-analysis/java-modernization.yaml
 ```
 
 ## Integration with Other Prompts

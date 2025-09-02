@@ -349,17 +349,17 @@ Before returning results, validate:
 
 ### Basic Project Planning
 ```
-project-blueprint "Build a collaborative document editor for remote teams with real-time sync and version history"
+Ask prompter to run project-blueprint with context: "Build a collaborative document editor for remote teams with real-time sync and version history"
 ```
 
 ### With Constraints
 ```
-project-blueprint "Create a mobile expense tracking app" --constraints "6 month timeline, 2 person team, iOS first"
+Ask prompter to run project-blueprint with context: "Create a mobile expense tracking app" and constraints: "6 month timeline, 2 person team, iOS first"
 ```
 
 ### With Rehydration
 ```
-project-blueprint "Build a task management SaaS" --rehydrate-from ./previous-analysis/project-management-app.yaml
+Ask prompter to run project-blueprint with context: "Build a task management SaaS" and rehydration from ./previous-analysis/project-management-app.yaml
 ```
 
 ## Integration with Other Prompts

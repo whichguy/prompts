@@ -19,8 +19,8 @@ These prompts follow an **outcome-oriented, prompt-as-code** approach:
 **Solves**: "What technologies should I use for this project?"
 
 ```
-stack-recommendation "Build a real-time collaborative editor for 1000 users"
-stack-recommendation "E-commerce platform" --rehydrate-from ./previous-analysis/marketplace.yaml
+Ask prompter to run stack-recommendation with context: "Build a real-time collaborative editor for 1000 users"
+Ask prompter to run stack-recommendation with context: "E-commerce platform" and rehydration from ./previous-analysis/marketplace.yaml
 ```
 
 **Output**: Primary technology stack, alternatives (conservative/innovative), GitHub evidence from 5+ repos, compatibility analysis, implementation guidance.
@@ -30,8 +30,8 @@ stack-recommendation "E-commerce platform" --rehydrate-from ./previous-analysis/
 **Solves**: "What are the real constraints and gotchas of this platform?"
 
 ```
-platform-constraints "Google Apps Script execution limits and state management"
-platform-constraints "Vercel Edge Functions" --focus-areas "database,scaling"
+Ask prompter to run platform-constraints with context: "Google Apps Script execution limits and state management"
+Ask prompter to run platform-constraints with context: "Vercel Edge Functions" and focus areas: "database,scaling"
 ```
 
 **Output**: Hard/soft limits discovered through testing, required patterns, anti-patterns, boilerplate code, use case recommendations.
@@ -41,8 +41,8 @@ platform-constraints "Vercel Edge Functions" --focus-areas "database,scaling"
 **Solves**: "How do I safely migrate from my current system?"
 
 ```
-migration-strategy "Migrate PHP monolith to microservices, keep running during migration"
-migration-strategy "Modernize legacy Java system" --risk-tolerance conservative
+Ask prompter to run migration-strategy with context: "Migrate PHP monolith to microservices, keep running during migration"
+Ask prompter to run migration-strategy with context: "Modernize legacy Java system" and risk tolerance: conservative
 ```
 
 **Output**: Phase-by-phase plan, zero-downtime approach, data synchronization strategy, risk assessment, rollback procedures.
@@ -52,8 +52,8 @@ migration-strategy "Modernize legacy Java system" --risk-tolerance conservative
 **Solves**: "I need a comprehensive plan to build this project"
 
 ```
-project-blueprint "Build a SaaS project management tool for remote teams"
-project-blueprint "Mobile expense app" --constraints "6 months, 2 person team"
+Ask prompter to run project-blueprint with context: "Build a SaaS project management tool for remote teams"
+Ask prompter to run project-blueprint with context: "Mobile expense app" and constraints: "6 months, 2 person team"
 ```
 
 **Output**: Detailed phases, task breakdown with estimates, team recommendations, technology stack, risk assessment, success metrics.
@@ -73,12 +73,12 @@ Each prompt's YAML output becomes structured input for related prompts.
 
 All prompts support organizational knowledge reuse:
 
-```bash
+```
 # Cache results for future similar projects
-stack-recommendation "marketplace project" > ./knowledge/marketplace-stack.yaml
+Ask prompter to run stack-recommendation with context: "marketplace project" and save output to ./knowledge/marketplace-stack.yaml
 
 # Rehydrate from previous analysis  
-stack-recommendation "another marketplace" --rehydrate-from ./knowledge/marketplace-stack.yaml
+Ask prompter to run stack-recommendation with context: "another marketplace" and rehydration from ./knowledge/marketplace-stack.yaml
 ```
 
 **Benefits**:
@@ -117,17 +117,17 @@ Each prompt enforces quality standards:
 
 ### Basic Usage
 ```
-[prompt-name] "[natural language description]"
+Ask prompter to run [prompt-name] with context: "[natural language description]"
 ```
 
 ### With Rehydration
 ```
-[prompt-name] "[description]" --rehydrate-from ./previous-analysis/file.yaml
+Ask prompter to run [prompt-name] with context: "[description]" and rehydration from ./previous-analysis/file.yaml
 ```
 
 ### With Constraints
 ```
-[prompt-name] "[description]" --constraints "budget, timeline, team size"
+Ask prompter to run [prompt-name] with context: "[description]" and constraints: "budget, timeline, team size"
 ```
 
 ## Repository Structure
@@ -151,29 +151,28 @@ prompts/
 ## Integration Examples
 
 ### Waterfall Approach
-```bash
+```
 # 1. Get project plan
-project-blueprint "Build collaborative whiteboard app"
+Ask prompter to run project-blueprint with context: "Build collaborative whiteboard app"
 
 # 2. Get technology recommendations  
-stack-recommendation "real-time collaborative whiteboard for 100 users"
+Ask prompter to run stack-recommendation with context: "real-time collaborative whiteboard for 100 users"
 
 # 3. Analyze chosen platform constraints
-platform-constraints "Node.js with Socket.io scaling limits"
+Ask prompter to run platform-constraints with context: "Node.js with Socket.io scaling limits"
 
 # 4. Create migration plan if replacing existing system
-migration-strategy "Migrate from Rails to Node.js whiteboard"
+Ask prompter to run migration-strategy with context: "Migrate from Rails to Node.js whiteboard"
 ```
 
 ### Rehydration Chain
-```bash
-# Build organizational knowledge
-stack-recommendation "collaborative tool" > ./org-knowledge/collab-stack.yaml
-platform-constraints "WebSocket platforms" > ./org-knowledge/websocket-limits.yaml
+```
+# Build organizational knowledge  
+Ask prompter to run stack-recommendation with context: "collaborative tool" and save output to ./org-knowledge/collab-stack.yaml
+Ask prompter to run platform-constraints with context: "WebSocket platforms" and save output to ./org-knowledge/websocket-limits.yaml
 
-# Reuse for similar project
-project-blueprint "team collaboration app" \
-  --rehydrate-from ./org-knowledge/collab-stack.yaml
+# Reuse for similar project with path references
+Ask prompter to run project-blueprint with context: "team collaboration app" and rehydration from ./org-knowledge/collab-stack.yaml and additional context from ./org-knowledge/websocket-limits.yaml
 ```
 
 ## IDEAL-STI Integration
@@ -197,5 +196,38 @@ The IDEAL-STI 11-phase planning system orchestrates outcome-oriented prompts:
 - Confidence levels meet thresholds
 - Evidence requirements satisfied
 - Integration patterns followed
+
+## Prompter Agent Integration
+
+All prompts are designed to work with the **prompter agent framework** for clean context isolation and proper parameter passing:
+
+### **Syntax Pattern:**
+```
+Ask prompter to run [template-name] with context: "[natural language description]" [and additional parameters] [and save output to path]
+```
+
+### **Context Passing Examples:**
+```
+# Basic execution
+Ask prompter to run stack-recommendation with context: "Build a mobile app for 10k users"
+
+# With constraints
+Ask prompter to run stack-recommendation with context: "Build a mobile app for 10k users" and constraints: "6 month timeline, iOS first, $50k budget"
+
+# With rehydration (knowledge reuse)
+Ask prompter to run stack-recommendation with context: "Build a marketplace app" and rehydration from ./knowledge/marketplace-analysis.yaml
+
+# With multiple context sources
+Ask prompter to run project-blueprint with context: "Build collaboration tool" and rehydration from ./knowledge/collab-stack.yaml and additional context from ./knowledge/team-constraints.yaml
+
+# With output saving
+Ask prompter to run platform-constraints with context: "Google Apps Script limits" and focus areas: "execution,storage" and save output to ./analysis/gas-constraints.yaml
+```
+
+### **Benefits:**
+- **Clean Context**: Each prompt runs in isolation without polluting main context
+- **Proper Parameter Passing**: Structured parameter handling via natural language
+- **Path Management**: Explicit file path handling for rehydration and output
+- **Agent Framework**: Leverages specialized prompter agent for template execution
 
 This repository provides a foundation for outcome-driven, evidence-based software architecture decision making with organizational knowledge accumulation.

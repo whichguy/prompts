@@ -18,9 +18,7 @@ execute_phase_3() {
     # If platform is mentioned in requirements, investigate constraints
     if echo "$arguments" | grep -qi "google\|salesforce\|aws\|azure"; then
         local platform=$(extract_platform "$arguments")
-        platform-constraints "$platform execution limits and scaling constraints for $arguments" \
-          --focus-areas "execution,scaling,cost" \
-          > docs/planning/phase3-platform-constraints.yaml
+        ask prompter to run platform-constraints with context: "$platform execution limits and scaling constraints for $arguments" and focus areas: "execution,scaling,cost" and save output to docs/planning/phase3-platform-constraints.yaml
     fi
     
     # Continue normal Phase 3...
@@ -63,29 +61,23 @@ execute_phase_4() {
     case $approach in
         greenfield)
             echo "📊 Approach: Technology Stack Selection (new project)"
-            stack-recommendation "$arguments" $rehydration_path \
-              > docs/planning/phase4-stack-recommendation.yaml
+            ask prompter to run stack-recommendation with context: "$arguments" and rehydration from "$rehydration_path" and save output to docs/planning/phase4-stack-recommendation.yaml
             ;;
             
         constrained)
             echo "🔍 Approach: Platform Constraints Investigation (specific platform)"
-            platform-constraints "$existing_stack for project: $arguments" \
-              --focus-areas "execution,storage,scaling,integration" \
-              > docs/planning/phase4-platform-constraints.yaml
+            ask prompter to run platform-constraints with context: "$existing_stack for project: $arguments" and focus areas: "execution,storage,scaling,integration" and save output to docs/planning/phase4-platform-constraints.yaml
             ;;
             
         migration)
             echo "🔄 Approach: Migration Strategy (modernizing existing system)"
-            migration-strategy "Migrate from $existing_stack for project: $arguments" \
-              --risk-tolerance conservative $rehydration_path \
-              > docs/planning/phase4-migration-strategy.yaml
+            ask prompter to run migration-strategy with context: "Migrate from $existing_stack for project: $arguments" and risk tolerance: conservative and rehydration from "$rehydration_path" and save output to docs/planning/phase4-migration-strategy.yaml
             ;;
     esac
     
     # Always get complete project blueprint incorporating technology decisions
     echo "📋 Generating comprehensive project blueprint..."
-    project-blueprint "$arguments" $rehydration_path \
-      > docs/planning/phase4-project-blueprint.yaml
+    ask prompter to run project-blueprint with context: "$arguments" and rehydration from "$rehydration_path" and additional context from docs/planning/phase4-*.yaml and save output to docs/planning/phase4-project-blueprint.yaml
     
     # Validate outcome-oriented prompt outputs
     validate_phase4_outputs "docs/planning/phase4-*.yaml"
@@ -316,7 +308,7 @@ launch_technology_investigation() {
     case $approach in
         comparative_analysis)
             # Run stack recommendation first to get alternatives
-            stack-recommendation "$context" > docs/planning/phase4-stack-analysis.yaml
+            ask prompter to run stack-recommendation with context: "$context" and save output to docs/planning/phase4-stack-analysis.yaml
             
             # Extract primary and alternative stacks
             local stacks=$(grep -A 10 "alternatives:" docs/planning/phase4-stack-analysis.yaml | \
@@ -345,9 +337,7 @@ EOF
                 
                 # Launch platform constraints analysis in worktree
                 (cd "$CURRENT_WORKTREE" && \
-                  platform-constraints "$stack platform analysis for: $context" \
-                    --focus-areas "execution,storage,scaling,deployment" \
-                    > constraints-${stack}.yaml)
+                  ask prompter to run platform-constraints with context: "$stack platform analysis for: $context" and focus areas: "execution,storage,scaling,deployment" and save output to constraints-${stack}.yaml)
                 
                 # Cleanup merges results back
                 cleanup_isolated_worktree
@@ -390,27 +380,27 @@ execute_phase_4 "Build a real-time collaborative editor for 1000 users"
 ```
 
 ### Direct Invocation
-```bash
+```
 # Investigate specific platform deeply
-platform-constraints "Vercel Edge Functions and Next.js" --focus-areas "edge-functions,streaming,performance"
+Ask prompter to run platform-constraints with context: "Vercel Edge Functions and Next.js" and focus areas: "edge-functions,streaming,performance"
 
 # Select stack for new project  
-stack-recommendation "e-commerce platform with 10k products, 500 orders/day"
+Ask prompter to run stack-recommendation with context: "e-commerce platform with 10k products, 500 orders/day"
 
 # Migration planning for existing system
-migration-strategy "migrate from WordPress to modern stack with 3 alternative approaches"
+Ask prompter to run migration-strategy with context: "migrate from WordPress to modern stack with 3 alternative approaches"
 ```
 
 ### From Other Phases
-```bash
+```
 # Phase 3: Check platform feasibility
-platform-constraints "Salesforce platform" --focus-areas "execution-model,cost,limitations"
+Ask prompter to run platform-constraints with context: "Salesforce platform" and focus areas: "execution-model,cost,limitations" and save output to docs/planning/phase3-salesforce-constraints.yaml
 
-# Phase 7: Get architecture patterns
-platform-constraints "selected technology stack" --focus-areas "patterns,architecture,best-practices"
+# Phase 7: Get architecture patterns  
+Ask prompter to run platform-constraints with context: "selected technology stack" and focus areas: "patterns,architecture,best-practices" and rehydration from docs/planning/phase4-stack-recommendation.yaml
 
 # Phase 10: Get deployment guide
-platform-constraints "selected technology stack" --focus-areas "deployment,monitoring,production"
+Ask prompter to run platform-constraints with context: "selected technology stack" and focus areas: "deployment,monitoring,production" and rehydration from docs/planning/phase4-project-blueprint.yaml and additional context from docs/planning/phase7-architecture.yaml
 ```
 
 ## Benefits of Integration

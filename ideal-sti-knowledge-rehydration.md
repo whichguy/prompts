@@ -56,13 +56,13 @@ tech-investigator --mode select --context "$arguments"
 local stack_context="Build a $project_type for $scale users with $key_features"
 
 # Phase 4: Technology stack selection
-stack-recommendation "$stack_context" --rehydrate-from ./docs/planning/.knowledge-state/stack-analysis.yaml
+ask prompter to run stack-recommendation with context: "$stack_context" and rehydration from ./docs/planning/.knowledge-state/stack-analysis.yaml and save output to ./docs/planning/phase4-stack-recommendation.yaml
 
 # Phase 4.5: Platform constraints investigation (if specific platform chosen)
-platform-constraints "$chosen_platform scaling and limits" --focus-areas "execution,storage,cost"
+ask prompter to run platform-constraints with context: "$chosen_platform scaling and limits" and focus areas: "execution,storage,cost" and save output to ./docs/planning/phase4-platform-constraints.yaml
 
 # Migration planning (if replacing existing system)
-migration-strategy "Migrate from $current_system to $target_system" --risk-tolerance conservative
+ask prompter to run migration-strategy with context: "Migrate from $current_system to $target_system" and risk tolerance: conservative and rehydration from ./docs/planning/.knowledge-state/migration-patterns.yaml and save output to ./docs/planning/phase4-migration-strategy.yaml
 ```
 
 ## Knowledge Rehydration Mechanism
@@ -406,7 +406,7 @@ execute_phase_4() {
         rehydrate_tech_investigation "$context"
     else
         echo "🆕 Launching fresh technology investigation"
-        stack-recommendation "$investigation_prompt"
+        ask prompter to run stack-recommendation with context: "$investigation_prompt" and save output to docs/planning/phase4-tech-investigation.yaml
     fi
     
     # Cache results for future rehydration

@@ -240,17 +240,17 @@ Before returning results, validate:
 
 ### Basic Platform Investigation
 ```
-platform-constraints "Vercel Edge Functions database connection handling and limits"
+Ask prompter to run platform-constraints with context: "Vercel Edge Functions database connection handling and limits"
 ```
 
 ### Focused Investigation
 ```
-platform-constraints "Google Apps Script" --focus-areas "execution,storage,auth" --scale-target 1000
+Ask prompter to run platform-constraints with context: "Google Apps Script" and focus areas: "execution,storage,auth" and scale target: 1000 users
 ```
 
 ### With Previous Analysis
 ```
-platform-constraints "AWS Lambda cold starts" --rehydrate-from ./previous-analysis/lambda-2023.yaml
+Ask prompter to run platform-constraints with context: "AWS Lambda cold starts" and rehydration from ./previous-analysis/lambda-2023.yaml
 ```
 
 ## Integration with Other Prompts
