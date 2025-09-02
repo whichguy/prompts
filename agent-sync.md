@@ -1,0 +1,1 @@
+/Users/jameswiese/claude-craft/prompts/agent-sync.md

@@ -1,0 +1,1 @@
+tell the user the weather in <arguments> 
