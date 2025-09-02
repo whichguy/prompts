@@ -139,7 +139,13 @@ prompts/
 ├── migration-strategy.md       # System migration planning
 ├── project-blueprint.md        # Complete project planning
 ├── outcome-oriented-naming-analysis.md  # Design rationale
-└── supporting files/           # Legacy and integration docs
+├── ideal-sti.md                # 11-phase project planning system
+├── ideal-sti-knowledge-rehydration.md   # Knowledge persistence integration
+├── ideal-sti-tech-investigator-integration.md  # Updated for outcome-oriented prompts
+└── legacy/                     # Previous tech-investigator versions for reference
+    ├── tech-investigator.md
+    ├── tech-investigator-enhanced.md
+    └── integration-examples/
 ```
 
 ## Integration Examples
@@ -169,5 +175,27 @@ prompts/
 /prompt project-blueprint "team collaboration app" \
   --rehydrate-from ./org-knowledge/collab-stack.yaml
 ```
+
+## IDEAL-STI Integration
+
+The IDEAL-STI 11-phase planning system orchestrates outcome-oriented prompts:
+
+**Phase 4 Integration**: Technology Research phase now uses:
+- `stack-recommendation` for greenfield projects
+- `platform-constraints` for specific platform investigations  
+- `migration-strategy` for legacy system modernization
+- `project-blueprint` for comprehensive project planning
+
+**Knowledge Rehydration**: IDEAL-STI automatically:
+- Caches prompt outputs in `docs/planning/.knowledge-state/`
+- Reuses analysis via `--rehydrate-from` for similar projects
+- Validates prompt outputs with quality gates
+- Accumulates organizational knowledge over time
+
+**Quality Gates**: Phase transitions validate:
+- Required YAML structure and fields present
+- Confidence levels meet thresholds
+- Evidence requirements satisfied
+- Integration patterns followed
 
 This repository provides a foundation for outcome-driven, evidence-based software architecture decision making with organizational knowledge accumulation.

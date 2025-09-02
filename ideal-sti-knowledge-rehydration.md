@@ -47,16 +47,22 @@ execute_phase_4() {
 }
 ```
 
-#### 3. Natural Language Tech-Investigator Integration
+#### 3. Outcome-Oriented Prompt Integration
 ```bash
-# OLD: Command-style invocation
+# OLD: Command-style tech-investigator
 /prompt tech-investigator --mode select --context "$arguments"
 
-# NEW: Natural language with context building
-local investigation_prompt="Based on our discovery that this is $project_type 
-with $scale users needing $key_features, help me choose the best technology stack"
+# NEW: Outcome-oriented prompts with natural language
+local stack_context="Build a $project_type for $scale users with $key_features"
 
-/prompt tech-investigator "$investigation_prompt"
+# Phase 4: Technology stack selection
+/prompt stack-recommendation "$stack_context" --rehydrate-from ./docs/planning/.knowledge-state/stack-analysis.yaml
+
+# Phase 4.5: Platform constraints investigation (if specific platform chosen)
+/prompt platform-constraints "$chosen_platform scaling and limits" --focus-areas "execution,storage,cost"
+
+# Migration planning (if replacing existing system)
+/prompt migration-strategy "Migrate from $current_system to $target_system" --risk-tolerance conservative
 ```
 
 ## Knowledge Rehydration Mechanism

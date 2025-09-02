@@ -1,10 +1,10 @@
-# IDEAL-STI Integration with Tech-Investigator Agent
+# IDEAL-STI Integration with Outcome-Oriented Prompts
 
 ## Phase Integration Points
 
 ### Phase 3: Feasibility Assessment
 **Current**: Basic technical feasibility check  
-**Enhanced**: Invoke tech-investigator for early constraint discovery
+**Enhanced**: Invoke outcome-oriented prompts for early constraint discovery
 
 ```bash
 # In Phase 3 execution
@@ -12,15 +12,15 @@ execute_phase_3() {
     local arguments="$1"
     echo "=== Phase 3: Feasibility Assessment ==="
     
-    # NEW: Early technology constraint discovery
-    echo "🔬 Launching tech-investigator for constraint discovery..."
+    # NEW: Early platform constraint discovery with natural language
+    echo "🔬 Launching platform constraints analysis for early feasibility..."
     
-    # If platform is mentioned in requirements, deep investigate
+    # If platform is mentioned in requirements, investigate constraints
     if echo "$arguments" | grep -qi "google\|salesforce\|aws\|azure"; then
-        /prompt tech-investigator --mode deep \
-          --stack "$(extract_platform $arguments)" \
-          --focus "execution-model scaling cost" \
-          > docs/planning/phase3-platform-constraints.md
+        local platform=$(extract_platform "$arguments")
+        /prompt platform-constraints "$platform execution limits and scaling constraints for $arguments" \
+          --focus-areas "execution,scaling,cost" \
+          > docs/planning/phase3-platform-constraints.yaml
     fi
     
     # Continue normal Phase 3...
@@ -30,66 +30,102 @@ execute_phase_3() {
 ### Phase 4: Technology Research (COMPLETE REPLACEMENT)
 
 ```bash
-# Replace entire Phase 4 with tech-investigator
+# Replace entire Phase 4 with outcome-oriented prompts
 execute_phase_4() {
     local arguments="$1"
     echo "=== Phase 4: Technology Research & Investigation ==="
     
-    # Determine investigation mode based on project type
-    local mode="select"  # default
+    # Check for rehydration opportunities
+    local rehydration_path=""
+    if [ -f "docs/planning/.knowledge-state/stack-analysis.yaml" ]; then
+        rehydration_path="--rehydrate-from docs/planning/.knowledge-state/stack-analysis.yaml"
+    fi
+    
+    # Determine approach based on project context
     local existing_stack=""
+    local approach="greenfield"  # default
     
     # Check if Phase 0 found existing technology
     if [ -f "docs/planning/phase0-existing-analysis.md" ]; then
         existing_stack=$(grep "Project Type:" docs/planning/phase0-existing-analysis.md | cut -d: -f2)
         if [ -n "$existing_stack" ]; then
-            mode="hybrid"  # Investigate current + alternatives
+            approach="migration"  # Migration from existing system
         fi
     fi
     
     # Check if Phase 3 identified platform constraints
     if grep -q "Platform Requirement:" docs/planning/phase3-feasibility.md 2>/dev/null; then
-        mode="deep"  # Deep investigate required platform
+        approach="constrained"  # Specific platform required
         existing_stack=$(grep "Platform Requirement:" docs/planning/phase3-feasibility.md | cut -d: -f2)
     fi
     
-    # Launch tech-investigator with appropriate mode
-    case $mode in
-        select)
-            echo "📊 Mode: Technology Selection (greenfield)"
-            /prompt tech-investigator --mode select \
-              --context "$arguments" \
-              > docs/planning/phase4-tech-selection.md
+    # Launch appropriate outcome-oriented prompts
+    case $approach in
+        greenfield)
+            echo "📊 Approach: Technology Stack Selection (new project)"
+            /prompt stack-recommendation "$arguments" $rehydration_path \
+              > docs/planning/phase4-stack-recommendation.yaml
             ;;
             
-        deep)
-            echo "🔍 Mode: Deep Platform Investigation (constrained)"
-            /prompt tech-investigator --mode deep \
-              --stack "$existing_stack" \
-              --focus "all" \
-              > docs/planning/phase4-platform-investigation.md
+        constrained)
+            echo "🔍 Approach: Platform Constraints Investigation (specific platform)"
+            /prompt platform-constraints "$existing_stack for project: $arguments" \
+              --focus-areas "execution,storage,scaling,integration" \
+              > docs/planning/phase4-platform-constraints.yaml
             ;;
             
-        hybrid)
-            echo "🔄 Mode: Hybrid Investigation (migration/enhancement)"
-            /prompt tech-investigator --mode hybrid \
-              --context "$arguments" \
-              --depth 3 \
-              > docs/planning/phase4-hybrid-investigation.md
+        migration)
+            echo "🔄 Approach: Migration Strategy (modernizing existing system)"
+            /prompt migration-strategy "Migrate from $existing_stack for project: $arguments" \
+              --risk-tolerance conservative $rehydration_path \
+              > docs/planning/phase4-migration-strategy.yaml
             ;;
     esac
     
-    # Validate tech-investigator output
-    validate_tech_investigation "docs/planning/phase4-*.md"
+    # Always get complete project blueprint incorporating technology decisions
+    echo "📋 Generating comprehensive project blueprint..."
+    /prompt project-blueprint "$arguments" $rehydration_path \
+      > docs/planning/phase4-project-blueprint.yaml
+    
+    # Validate outcome-oriented prompt outputs
+    validate_phase4_outputs "docs/planning/phase4-*.yaml"
 }
 
-validate_tech_investigation() {
+validate_phase4_outputs() {
     local files="$1"
     
-    # Check for required sections based on mode
-    if ls $files | grep -q "selection"; then
-        # Validate selection mode output
-        for required in "primary_stack" "alternatives" "github_repos" "decision_matrix"; do
+    echo "🔍 Validating Phase 4 outcome-oriented prompt outputs..."
+    
+    # Check for YAML structure and required fields
+    for file in $files; do
+        if [ ! -f "$file" ]; then
+            echo "❌ Missing expected output file: $file"
+            return 1
+        fi
+        
+        # Validate YAML structure
+        if ! python3 -c "import yaml; yaml.safe_load(open('$file'))" 2>/dev/null; then
+            echo "❌ Invalid YAML structure in: $file"
+            return 1
+        fi
+        
+        # Check for deliverable_type field
+        if ! grep -q "deliverable_type:" "$file"; then
+            echo "❌ Missing deliverable_type in: $file"
+            return 1
+        fi
+        
+        # Check for confidence_level field
+        if ! grep -q "confidence_level:" "$file"; then
+            echo "❌ Missing confidence_level in: $file"
+            return 1
+        fi
+    done
+    
+    # Validate specific output types
+    if ls $files | grep -q "stack-recommendation"; then
+        # Validate stack recommendation output
+        for required in "primary_stack" "alternatives" "github_evidence" "compatibility_analysis"; do
             if ! grep -q "$required" $files; then
                 echo "❌ Missing required section: $required"
                 return 1
@@ -97,9 +133,9 @@ validate_tech_investigation() {
         done
     fi
     
-    if ls $files | grep -q "investigation"; then
-        # Validate deep mode output
-        for required in "constraints" "patterns" "anti_patterns" "boilerplate"; do
+    if ls $files | grep -q "platform-constraints"; then
+        # Validate platform constraints output  
+        for required in "execution_model" "discovered_quotas" "production_patterns" "limitations_for_use_cases"; do
             if ! grep -q "$required" $files; then
                 echo "❌ Missing required section: $required"
                 return 1
@@ -107,7 +143,27 @@ validate_tech_investigation() {
         done
     fi
     
-    echo "✅ Technology investigation validated"
+    if ls $files | grep -q "migration-strategy"; then
+        # Validate migration strategy output
+        for required in "migration_approach" "zero_downtime_strategy" "risk_assessment" "implementation_roadmap"; do
+            if ! grep -q "$required" $files; then
+                echo "❌ Missing required section: $required"
+                return 1
+            fi
+        done
+    fi
+    
+    if ls $files | grep -q "project-blueprint"; then
+        # Validate project blueprint output
+        for required in "phases" "team_recommendations" "risk_assessment" "success_metrics"; do
+            if ! grep -q "$required" $files; then
+                echo "❌ Missing required section: $required"
+                return 1
+            fi
+        done
+    fi
+    
+    echo "✅ Phase 4 outcome-oriented prompts validated successfully"
     return 0
 }
 ```
